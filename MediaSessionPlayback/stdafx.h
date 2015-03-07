@@ -30,3 +30,5 @@
 #include <mfidl.h>
 #include <mferror.h>
 #include <evr.h>
+
+#include "DeckLinkAPI_h.h"

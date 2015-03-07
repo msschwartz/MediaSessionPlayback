@@ -69,6 +69,53 @@ HRESULT CPlayer::CreateInstance(
 
 HRESULT CPlayer::Initialize()
 {
+	HRESULT result = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+	if (result == S_FALSE)
+	{
+		CoUninitialize();
+		return FALSE;
+	}
+	
+	// Decklink devices
+	OutputDebugString(L"DeckLink devices...\n");
+	IDeckLinkIterator *deckLinkIterator = NULL;
+	result = CoCreateInstance(CLSID_CDeckLinkIterator, NULL, CLSCTX_ALL, IID_IDeckLinkIterator, (void**)&deckLinkIterator);
+	if (SUCCEEDED(result))
+	{
+		IDeckLink *decklinkInstance = NULL;
+		while (deckLinkIterator->Next(&decklinkInstance) == S_OK)
+		{
+			OutputDebugString(L"Found device, checking if it supports NTSC output...\n");
+
+			WCHAR *deviceNameBSTR = NULL;
+			result = decklinkInstance->GetModelName(&deviceNameBSTR);
+			if (SUCCEEDED(result))
+			{
+				// todo: add this device name to an array or something
+
+				IDeckLinkOutput *deckLinkOutput = NULL;
+				result = decklinkInstance->QueryInterface(IID_IDeckLinkOutput, (void**)&deckLinkOutput);
+				if (SUCCEEDED(result))
+				{
+					BMDDisplayModeSupport support;
+					result = deckLinkOutput->DoesSupportVideoMode(bmdModeNTSC, bmdFormat8BitYUV, bmdVideoOutputFlagDefault, &support, NULL);
+					if (SUCCEEDED(result))
+					{
+						if (support == bmdDisplayModeSupported)
+						{
+							OutputDebugString(L"NTSC 8 Bit YUV supported!\n");
+							result = deckLinkOutput->EnableVideoOutput(bmdModeNTSC, bmdVideoOutputFlagDefault);
+							if (SUCCEEDED(result))
+							{
+
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	// Start up Media Foundation platform.
 	HRESULT hr = MFStartup(MF_VERSION);
 	if (SUCCEEDED(hr))

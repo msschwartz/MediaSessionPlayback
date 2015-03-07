@@ -9,6 +9,7 @@
 #define PLAYER_H
 
 #include "resource.h"
+// #include "RenderDelegate.h"
 
 template <class T> void SafeRelease(T **ppT)
 {
@@ -102,6 +103,8 @@ protected:
 	HWND                    m_hwndEvent;        // App window to receive events.
 	PlayerState             m_state;            // Current state of the media session.
 	HANDLE                  m_hCloseEvent;      // Event to wait on while closing.
+
+	// RenderDelegate          *m_pRenderDelegate;
 };
 
 #endif PLAYER_H
