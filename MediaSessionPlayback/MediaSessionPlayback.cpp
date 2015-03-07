@@ -312,7 +312,7 @@ void OnOpenURL(HWND hwnd)
 	ZeroMemory(&url, sizeof(&url));
 
 	// Show the Open URL dialog.
-	if (IDOK == DialogBoxParam(g_hInstance, MAKEINTRESOURCE(IDD_OPENURL), hwnd,
+	if (IDOK == DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_OPENURL), hwnd,
 		OpenUrlDialogProc, (LPARAM)&url))
 	{
 		// Open the file with the playback object.
